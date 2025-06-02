@@ -1,0 +1,25 @@
+from fastapi import APIRouter, HTTPException
+from ..services.transaction_service import TransactionService
+from decimal import Decimal
+
+router = APIRouter(
+    prefix="/api/transactions",
+    tags=["transactions"]
+)
+
+@router.post("/transfer")
+async def transfer_funds(
+    sender_id: int,
+    receiver_id: int,
+    amount: float,
+    currency: str,
+    convert_currency: bool = False
+):
+    try:
+        amount_decimal = Decimal(str(amount))
+        service = TransactionService()
+        result = service.transfer(sender_id, receiver_id, amount_decimal, currency, convert_currency)
+        
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

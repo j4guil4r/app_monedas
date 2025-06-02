@@ -16,6 +16,18 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  app:
+    build: .
+    container_name: currency_exchange_app
+    environment:
+      DATABASE_URL: postgresql://app_user:app_password@db:5432/exchange_db
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
 
 volumes:
   exchange_db_data:

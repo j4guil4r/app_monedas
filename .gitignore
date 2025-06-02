@@ -2,3 +2,4 @@
 __pycache__/
 **/__pycache__/
 test_adapters.py
+test_singleton.py
