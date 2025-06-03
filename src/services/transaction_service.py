@@ -10,7 +10,7 @@ class TransactionService:
         self.observer = TransactionObserver()
         self.exchange_service = ExchangeService()
     
-    def transfer(self, sender_id: int, receiver_id: int, amount: float, currency: str, convert_currency: bool = False):
+    def transfer(self, sender_id: int, receiver_id: int, amount: float, convert_currency: bool = False):
         # Lógica de transferencia
         try:
             amount_decimal = Decimal(str(amount))

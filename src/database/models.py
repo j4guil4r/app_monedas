@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Numeric, ForeignKey, DateTime
+from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
 from .session import engine
 
@@ -28,7 +29,7 @@ class Transaction(Base):
     amount = Column(Numeric(15, 2))
     currency = Column(String(3))
     exchange_rate = Column(Numeric(10, 4))
-    timestamp = Column(DateTime)
+    timestamp = Column(DateTime, default=func.now())
 
 # Verificar que los modelos coincidan con la estructura de la DB
 def validate_models():

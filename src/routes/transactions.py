@@ -12,13 +12,12 @@ async def transfer_funds(
     sender_id: int,
     receiver_id: int,
     amount: float,
-    currency: str,
     convert_currency: bool = False
 ):
     try:
         amount_decimal = Decimal(str(amount))
         service = TransactionService()
-        result = service.transfer(sender_id, receiver_id, amount_decimal, currency, convert_currency)
+        result = service.transfer(sender_id, receiver_id, amount_decimal, convert_currency)
         
         return result
     except Exception as e:
