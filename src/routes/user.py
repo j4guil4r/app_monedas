@@ -8,6 +8,6 @@ async def create_user(name: str):
     try:
         service = UserService()
         user = service.create_user(name)
-        return {"id": user.id, "name": user.name}
+        return user
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
