@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routes import exchange, transactions
+from .routes import exchange, transactions, user
 
 app = FastAPI(
     title="API de Intercambio de Monedas",
@@ -8,6 +8,7 @@ app = FastAPI(
 
 app.include_router(exchange.router)
 app.include_router(transactions.router)
+app.include_router(user.router)
 
 @app.get("/")
 async def health_check():
