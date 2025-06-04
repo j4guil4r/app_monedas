@@ -1,4 +1,4 @@
-from ..adapters import ExchangeRateAPI, FrankfurterAPI
+from ..adapters import ExchangeRateAPI, FrankfurterAPI, MoneyMorphAPI
 
 class APISingleton:
     # unica instancia
@@ -19,6 +19,8 @@ class APISingleton:
             cls._current_adapter = ExchangeRateAPI()
         elif adapter_name == "FrankfurterAPI":
             cls._current_adapter = FrankfurterAPI()
+        elif adapter_name == "MoneyMorphAPI":
+            cls._current_adapter = MoneyMorphAPI()
         else:
             raise ValueError("Adaptador no válido")
     

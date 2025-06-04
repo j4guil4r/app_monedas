@@ -10,16 +10,18 @@ router = APIRouter(
 async def convert_currency(
     amount: float,
     from_curr: str,
-    to_curr: str
+    to_curr: str,
+    api: str = "ExchangeRateAPI"
 ):
     try:
         service = ExchangeService()
-        result = service.convert_currency(amount, from_curr, to_curr)
+        result = service.convert_currency(amount, from_curr, to_curr, api)
         return {
             "from_currency": from_curr,
             "to_currency": to_curr,
             "amount": amount,
-            "converted_amount": result
+            "converted_amount": result,
+            "api": api
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -31,7 +33,7 @@ async def get_exchange_rate(
     api: str = "ExchangeRateAPI"
 ):
     try:
-        service = ExchangeService(api)
+        service = ExchangeService()
         rate = service.get_exchange_rate(from_curr, to_curr)
         return {
             "from_currency": from_curr,

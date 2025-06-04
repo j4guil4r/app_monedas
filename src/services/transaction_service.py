@@ -18,12 +18,12 @@ class TransactionService:
             if sender_account.balance < amount:
                 raise ValueError("Saldo insuficiente")
             
-            exchange_service = ExchangeService(api_name)
+            exchange_service = ExchangeService()
 
             # Conversión de moneda si es necesario
             if sender_account.currency != receiver_account.currency:
                 converted_amount = exchange_service.convert_currency(
-                    amount, sender_account.currency, receiver_account.currency
+                    amount, sender_account.currency, receiver_account.currency, api_name
                 )
                 exchange_rate = converted_amount / amount
             else:
@@ -49,7 +49,8 @@ class TransactionService:
                 "message": "Transferencia exitosa",
                 "original_amount": amount,
                 "converted_amount": converted_amount,
-                "exchange_rate": exchange_rate
+                "exchange_rate": exchange_rate,
+                "api": api_name
             }
 
         except Exception as e:
