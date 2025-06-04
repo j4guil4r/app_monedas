@@ -22,3 +22,10 @@ class AccountService:
             raise ValueError(f"Error al crear cuenta: {str(e)}")
         finally:
             self.db.close()
+
+    def get_user_accounts(self, user_id: int):
+        try:
+            accounts = self.db.query(Account).filter(Account.user_id == user_id).all()
+            return accounts
+        except Exception as e:
+            raise ValueError(f"Error al obtener cuentas: {str(e)}")

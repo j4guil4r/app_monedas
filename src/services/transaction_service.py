@@ -8,9 +8,8 @@ class TransactionService:
     def __init__(self):
         self.db = SessionLocal()
         self.observer = TransactionObserver()
-        self.exchange_service = ExchangeService()
     
-    def transfer(self, sender_id: int, receiver_id: int, amount: float, convert_currency: bool = False):
+    def transfer(self, sender_id: int, receiver_id: int, amount: float, api_name: str = "ExchangeRateAPI"):
         # Lógica de transferencia
         try:
             amount_decimal = Decimal(str(amount))
@@ -20,10 +19,12 @@ class TransactionService:
             # Validar saldo suficiente
             if sender_account.balance < amount:
                 raise ValueError("Saldo insuficiente")
+            
+            exchange_service = ExchangeService(api_name)
 
             # Conversión de moneda si es necesario
-            if convert_currency or sender_account.currency != receiver_account.currency:
-                converted_amount = self.exchange_service.convert_currency(
+            if sender_account.currency != receiver_account.currency:
+                converted_amount = exchange_service.convert_currency(
                     amount, sender_account.currency, receiver_account.currency
                 )
                 exchange_rate = converted_amount / amount
@@ -59,3 +60,15 @@ class TransactionService:
             raise e
         finally:
             self.db.close()
+
+def get_user_transactions(self, user_id: int):
+    try:
+        transactions = self.db.query(Transaction).join(
+            Account, 
+            (Transaction.sender_account_id == Account.id) | 
+            (Transaction.receiver_account_id == Account.id)
+        ).filter(Account.user_id == user_id).all()
+        
+        return transactions
+    except Exception as e:
+        raise ValueError(f"Error al obtener transacciones: {str(e)}")

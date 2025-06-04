@@ -12,12 +12,12 @@ async def transfer_funds(
     sender_id: int,
     receiver_id: int,
     amount: float,
-    convert_currency: bool = False
+    api: str = "ExchangeRateAPI"
 ):
     try:
         amount_decimal = Decimal(str(amount))
         service = TransactionService()
-        result = service.transfer(sender_id, receiver_id, amount_decimal, convert_currency)
+        result = service.transfer(sender_id, receiver_id, amount_decimal, api)
         
         return result
     except Exception as e:
