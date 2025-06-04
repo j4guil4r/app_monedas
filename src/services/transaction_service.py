@@ -1,5 +1,4 @@
 from ..database.session import SessionLocal
-from ..patterns.observer import TransactionObserver
 from ..database.models import Transaction, Account
 from ..services.exchange_service import ExchangeService
 from decimal import Decimal
@@ -7,7 +6,6 @@ from decimal import Decimal
 class TransactionService:
     def __init__(self):
         self.db = SessionLocal()
-        self.observer = TransactionObserver()
     
     def transfer(self, sender_id: int, receiver_id: int, amount: float, api_name: str = "ExchangeRateAPI"):
         # Lógica de transferencia
@@ -46,7 +44,6 @@ class TransactionService:
             )
             self.db.add(transaction)
             self.db.commit()
-            self.observer.notify(transaction.__dict__)
 
             return {
                 "message": "Transferencia exitosa",
@@ -60,15 +57,3 @@ class TransactionService:
             raise e
         finally:
             self.db.close()
-
-def get_user_transactions(self, user_id: int):
-    try:
-        transactions = self.db.query(Transaction).join(
-            Account, 
-            (Transaction.sender_account_id == Account.id) | 
-            (Transaction.receiver_account_id == Account.id)
-        ).filter(Account.user_id == user_id).all()
-        
-        return transactions
-    except Exception as e:
-        raise ValueError(f"Error al obtener transacciones: {str(e)}")
