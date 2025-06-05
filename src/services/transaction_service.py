@@ -58,3 +58,19 @@ class TransactionService:
             raise e
         finally:
             self.db.close()
+    
+    def get_user_transactions(self, user_id: int):
+        self.db = SessionLocal()
+        try:
+            # Busca todas las transacciones donde el sender_account pertenece al user_id
+            transactions = self.db.query(Transaction).join(
+                Account, Transaction.sender_account_id == Account.id
+            ).filter(
+                Account.user_id == user_id
+            ).order_by(Transaction.timestamp.desc()).all()
+            
+            return transactions
+        except Exception as e:
+            raise ValueError(f"Error al obtener transacciones: {str(e)}")
+        finally:
+            self.db.close()
