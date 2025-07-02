@@ -16,11 +16,13 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
   app:
     build: .
     container_name: currency_exchange_app
     environment:
       DATABASE_URL: postgresql://app_user:app_password@db:5432/exchange_db
+      TEST_MODE: "1"  # 👈 Esto activa el mock con delay
     ports:
       - "8000:8000"
     depends_on:
@@ -28,6 +30,7 @@ services:
         condition: service_healthy
     volumes:
       - ./src:/app/src
+
   test:
     build: .
     container_name: currency_exchange_tests
@@ -41,8 +44,6 @@ services:
       - .:/app
     working_dir: /app
     command: pytest
-
-
 
 volumes:
   exchange_db_data:

@@ -40,3 +40,12 @@ async def get_user_transactions(user_id: int):
         } for t in transactions]
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@router.post("/deposit")
+async def deposit_to_account(account_id: int, amount: float):
+    try:
+        service = TransactionService()
+        result = service.deposit(account_id, Decimal(str(amount)))
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

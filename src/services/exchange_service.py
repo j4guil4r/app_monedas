@@ -1,9 +1,16 @@
-from ..patterns.singleton import APISingleton
+import os
 from decimal import Decimal
+from ..patterns.singleton import APISingleton
+from ..adapters.mock_api import MockAPI
 
 class ExchangeService:
     def get_exchange_rate(self, from_currency: str, to_currency: str, api_name: str = "ExchangeRateAPI") -> Decimal:
-        # Cambiar adaptador según selección
+        #MockAPI
+        if os.getenv("TEST_MODE") == "1":
+            adapter = MockAPI()
+            return Decimal(str(adapter.get_exchange_rate(from_currency, to_currency)))
+        
+        #Modo normal con singleton
         APISingleton().set_adapter(api_name)
         adapter = APISingleton().get_adapter()
         return Decimal(str(adapter.get_exchange_rate(from_currency, to_currency)))

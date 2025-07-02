@@ -1,6 +1,7 @@
 from ..database.session import SessionLocal
 from ..database.models import Transaction, Account
 from ..services.exchange_service import ExchangeService
+from sqlalchemy.orm.exc import NoResultFound
 from decimal import Decimal
 
 class TransactionService:
@@ -74,3 +75,23 @@ class TransactionService:
             raise ValueError(f"Error al obtener transacciones: {str(e)}")
         finally:
             self.db.close()
+    
+    def deposit(self, account_id: int, amount: Decimal):
+        session = SessionLocal()
+        try:
+            account = session.query(Account).filter(Account.id == account_id).one()
+            account.balance = Decimal(account.balance) + amount
+            session.commit()
+            return {
+                "account_id": account.id,
+                "new_balance": float(account.balance),
+                "message": f"Se depositó {amount} a la cuenta {account.id}"
+            }
+        except NoResultFound:
+            session.rollback()
+            raise Exception(f"No se encontró la cuenta con ID {account_id}")
+        except Exception as e:
+            session.rollback()
+            raise e
+        finally:
+            session.close()
