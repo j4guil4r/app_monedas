@@ -21,7 +21,7 @@ def test_transfer_same_currency_success(mock_session_local, mock_exchange_servic
     ]
 
     service = TransactionService()
-    result = service.transfer(1, 2, 20.0)
+    result = service.transfer(1, 2, Decimal("20.0"))
 
     assert result["message"] == "Transferencia exitosa"
     assert result["converted_amount"] == 20.0
@@ -46,14 +46,15 @@ def test_transfer_different_currency_success(mock_session_local, mock_exchange_s
     ]
 
     mock_exchange = MagicMock()
-    mock_exchange.convert_currency.return_value = 74.0  # Ejemplo: 1 USD = 3.7 PEN
+    mock_exchange.convert_currency.return_value = Decimal("74.0")  # Por ejemplo: 20 USD → 74 PEN
     mock_exchange_service.return_value = mock_exchange
 
     service = TransactionService()
-    result = service.transfer(1, 2, 20.0)
+    result = service.transfer(1, 2, Decimal("20.0"))
 
+    assert result["message"] == "Transferencia exitosa"
     assert result["converted_amount"] == 74.0
-    assert round(result["exchange_rate"], 2) == 3.7
+    assert float(result["exchange_rate"]) == 3.7
     mock_db.commit.assert_called_once()
     mock_db.close.assert_called_once()
 
@@ -75,7 +76,7 @@ def test_transfer_insufficient_balance(mock_session_local, mock_exchange_service
     service = TransactionService()
 
     with pytest.raises(ValueError) as excinfo:
-        service.transfer(1, 2, 20.0)
+        service.transfer(1, 2, Decimal("20.0"))
 
     assert "Saldo insuficiente" in str(excinfo.value)
     mock_db.rollback.assert_called_once()

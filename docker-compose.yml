@@ -28,6 +28,21 @@ services:
         condition: service_healthy
     volumes:
       - ./src:/app/src
+  test:
+    build: .
+    container_name: currency_exchange_tests
+    environment:
+      DATABASE_URL: postgresql://app_user:app_password@db:5432/exchange_db
+      PYTHONPATH: /app  # <- Esto es clave
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: pytest
+
+
 
 volumes:
   exchange_db_data:
